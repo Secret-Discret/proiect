@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const API_BASE = "http://127.0.0.1:8000/weighted";
+const API_BASE = process.env.REACT_APP_API_BASE_Dell;
 
 function SelectAdvisors() {
   const [advisors, setAdvisors] = useState([]);
