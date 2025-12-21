@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+frontend/vite-project/src/assets
 build/
 develop-eggs/
 dist/

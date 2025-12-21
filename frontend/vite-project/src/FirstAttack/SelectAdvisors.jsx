@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const API_BASE = "http://127.0.0.1:8000/weighted";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function SelectAdvisors() {
   const [advisors, setAdvisors] = useState([]);
@@ -41,7 +41,7 @@ function SelectAdvisors() {
       const res2 = await fetch(`${API_BASE}/result`, { method: "GET" });
       if (!res2.ok) throw new Error("Failed to retrieve result");
       const data = await res2.json();
-      if (data.success == true)
+      if (data.success === true)
         navigate("/math", {
           state: { mathSteps: data.math_steps, nextPath: "/attack" },
         });
