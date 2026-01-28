@@ -5,30 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0bf0af2d-eedd-4f91-860f-5288ec4eb175" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/shamir_logic/entities.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/AttackStyles.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/LandingStyles.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/RedactorsStyles.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/SelectSecretStyles.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/ShowMathStyles.module.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vite-project/src/styles/TransitionStyles.module.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/MultiSecretSharing/domain/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/MultiSecretSharing/domain/entities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/MultiSecretSharing/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/MultiSecretSharing/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend/MultiSecretSharing/service/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/MultiSecretSharing/service/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/domain/entities.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/repository/repository.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/service/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/service/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/AttackPosts.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/AttackPosts.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/Landing.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/Landing.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/SelectRedactors.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/SelectRedactors.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/SelectSecret.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/SelectSecret.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/ShowMath.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/ShowMath.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/TransitionScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/ReleaseInfo/TransitionScreen.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/SimpleShamir/Landing.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/SimpleShamir/Landing.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/SimpleShamir/ShowMath.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/SimpleShamir/ShowMath.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite-project/src/SimpleShamir/TransitionScreen.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/vite-project/src/SimpleShamir/TransitionScreen.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/shamir_logic/entities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/ThresholdSimpleSharing/shamir_logic/entities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1769609378426</updated>
       <workItem from="1769609380939" duration="110000" />
-      <workItem from="1769609503223" duration="17095000" />
+      <workItem from="1769609503223" duration="18340000" />
     </task>
     <task id="LOCAL-00001">
       <option name="closed" value="true" />

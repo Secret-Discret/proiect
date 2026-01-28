@@ -10,11 +10,11 @@ class MultiSecretService:
         self.repository = MultiSecretRepository()
 
     def _set_director(self, name: str):
-        self.repository.set_director(name)
+        self.repository._set_director(name)
         return {"message": f"Director set to {name}"}
 
     def _get_redactors(self) -> List[Redactor]:
-        return self.repository.get_redactors()
+        return self.repository._get_redactors()
 
     def _encode_secrets(self, secrets: Dict[str, int]):
         coeffs = []
@@ -35,7 +35,7 @@ class MultiSecretService:
                 "formula": f"a{index} = {secret_value} mod {PRIME} = {coeff}"
             })
 
-            redactors = self.repository.get_redactors()
+            redactors = self.repository._get_redactors()
             selected = random.sample(
                 redactors,
                 random.randint(2, len(redactors))
@@ -48,7 +48,7 @@ class MultiSecretService:
             })
 
             total_weight = sum(
-                self.repository.get_redactor_by_id(rid).rank
+                self.repository._get_redactor_by_id(rid).rank
                 for rid in access
             )
             min_weight = total_weight // 2 + 1
@@ -58,14 +58,14 @@ class MultiSecretService:
                 "formula": f"⌊{total_weight} / 2⌋ + 1 = {min_weight}"
             })
 
-            self.repository.add_secret(
+            self.repository._add_secret(
                 secret_id=secret_id,
                 index=index,
                 access=access,
                 min_weight=min_weight
             )
 
-        self.repository.set_polynomial(coeffs)
+        self.repository._set_polynomial(coeffs)
 
         math_steps.append({
             "step": "Finalize polynomial",
@@ -75,9 +75,9 @@ class MultiSecretService:
             )
         })
 
-        for r in self.repository.get_redactors():
+        for r in self.repository._get_redactors():
             share = evaluate_polynomial(coeffs, r.id)
-            r.set_share(r.id, share)
+            r._set_share(r.id, share)
 
             math_steps.append({
                 "step": f"Distribute share to redactor {r.id}",
@@ -92,21 +92,21 @@ class MultiSecretService:
         }
 
     def _trust_redactors(self, secret_id: str, ids: List[int]):
-        self.repository.trust_redactors(secret_id, ids)
+        self.repository._trust_redactors(secret_id, ids)
 
     def _clear_trusted_redactors(self, secret_id: str):
-        self.repository.clear_trusted_redactors(secret_id)
+        self.repository._clear_trusted_redactors(secret_id)
         return {"message": f"Trusted redactors cleared for '{secret_id}'"}
 
     def _get_trusted_redactors(self, secret_id: str):
-        return list(self.repository.get_trusted_redactors(secret_id))
+        return list(self.repository._get_trusted_redactors(secret_id))
 
     def _decode_secret(self, secret_id: str):
-        meta = self.repository.get_secret(secret_id)
+        meta = self.repository._get_secret(secret_id)
         if not meta:
             return {"success": False, "error": "Secret not found!"}
 
-        trusted = self.repository.get_trusted_redactors(secret_id)
+        trusted = self.repository._get_trusted_redactors(secret_id)
         points = []
         weight = 0
         math_steps = []
@@ -126,8 +126,8 @@ class MultiSecretService:
                 })
                 continue
 
-            r = self.repository.get_redactor_by_id(rid)
-            if not r or not r.get_share():
+            r = self.repository._get_redactor_by_id(rid)
+            if not r or not r._get_share():
                 math_steps.append({
                     "step": f"Redactor {rid} skipped",
                     "description": "Redactor missing or has no share",
@@ -135,13 +135,13 @@ class MultiSecretService:
                 })
                 continue
 
-            points.append(r.get_share())
+            points.append(r._get_share())
             weight += r.rank
 
             math_steps.append({
                 "step": f"Include Redactor {rid}",
                 "description": "Add redactor's rank to total weight and include share",
-                "formula": f"share = {r.get_share()}, weight += {r.rank} → {weight}"
+                "formula": f"share = {r._get_share()}, weight += {r.rank} → {weight}"
             })
 
         if weight < meta["min_weight"]:
@@ -185,10 +185,10 @@ class MultiSecretService:
         }
 
     def _list_secrets(self):
-        return list(self.repository.get_all_secrets())
+        return list(self.repository._get_all_secrets())
 
     def _get_secret_data(self, secret_id: str):
-        secret = self.repository.get_secret(secret_id)
+        secret = self.repository._get_secret(secret_id)
         if not secret:
             return {"error": "Secret not found"}
         return {

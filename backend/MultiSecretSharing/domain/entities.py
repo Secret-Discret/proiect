@@ -8,13 +8,13 @@ class Redactor:
         self.rank = rank
         self.share: tuple[int, int] | None = None  # (x, y)
 
-    def set_share(self, x: int, y: int):
+    def _set_share(self, x: int, y: int):
         self.share = (x, y)
 
-    def get_share(self) -> tuple[int, int] | None:
+    def _get_share(self) -> tuple[int, int] | None:
         return self.share
 
-    def to_string(self):
+    def _to_string(self):
         return f"ID={self.id} | Name={self.name} | Position={self.position} | Rank={self.rank} | Share={self.share}"
 
 class Director:
