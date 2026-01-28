@@ -1,5 +1,7 @@
 from typing import Union
 import WeightedSecretSharing.routes as weightedRoutes
+import HierarchicalSecretSharing.routes as hierarchicalRoutes
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,7 +19,8 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-app.include_router(weightedRoutes.router, prefix="/weighted")
+app.include_router(weightedRoutes.router, prefix="/weighted", tags=["WeightedSecretSharing"])
+app.include_router(hierarchicalRoutes.router, prefix="/hierarchical", tags=["HierarchicalSecretSharing"]) #weighted shamir
 
 # pip install "fastapi[standard]"
 # fastapi dev main.py

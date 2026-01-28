@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const API_BASE = process.env.REACT_APP_API_BASE_Dell;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function SelectAdvisors() {
   const [advisors, setAdvisors] = useState([]);
