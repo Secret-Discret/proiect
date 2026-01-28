@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import styles from "../styles/ShowMathStyles.module.css"
 
 const API = import.meta.env.VITE_SIMPLE_API_BASE;
 
@@ -27,12 +28,12 @@ function ShamirDecodeMath() {
     }
 
     return (
-        <div style={styles.container}>
-            <h1>🔓 Reconstruction</h1>
+        <div className={styles.container}>
+            <h1>🔒 Reconstruction</h1>
 
             <h2 style={{ color: "lime" }}>SUCCESS</h2>
             <p>Recovered Secret:</p>
-            <pre style={styles.secret}>{result.secret}</pre>
+            <pre className={styles.secret}>{result.secret}</pre>
 
             <h3>📐 Math Steps</h3>
             <ul>
@@ -44,33 +45,11 @@ function ShamirDecodeMath() {
                 ))}
             </ul>
 
-            <button style={styles.button} onClick={() => navigate("/simple")}>
+            <button className={styles.button} onClick={() => navigate("/simple")}>
                 Hide Another Secret
             </button>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        background: "black",
-        color: "#00ff00",
-        minHeight: "100vh",
-        padding: "24px",
-        fontFamily: "Courier New, monospace",
-    },
-    secret: {
-        background: "#001100",
-        padding: "12px",
-        fontSize: "1.2rem",
-    },
-    button: {
-        backgroundColor: "black",
-        color: "#00ff00",
-        border: "1px solid #00ff00",
-        padding: "8px 16px",
-        cursor: "pointer",
-    },
-};
 
 export default ShamirDecodeMath;

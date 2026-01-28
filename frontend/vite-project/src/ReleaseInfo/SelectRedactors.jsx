@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import styles from "../styles/RedactorsStyles.module.css"
 const MULTI_API_BASE = import.meta.env.VITE_MULTI_API_BASE;
 
 function SelectRedactors() {
@@ -54,29 +54,24 @@ function SelectRedactors() {
         }
       });
     } catch {
-      setError("Decode failed");
+      setError("Decode failed!");
     }
   };
 
 
   return (
-      <div style={styles.container}>
+      <div className={styles.container}>
         <h1>Select Redactors</h1>
         <p>No hints. Trust wisely.</p>
 
-        {error && <p style={styles.error}>{error}</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
-        <div style={styles.grid}>
+        <div className={styles.grid}>
           {redactors.map(r => (
               <div
                   key={r.id}
                   onClick={() => toggle(r.id)}
-                  style={{
-                    ...styles.card,
-                    border: selectedIds.includes(r.id)
-                        ? "2px solid crimson"
-                        : "1px solid #00ff00"
-                  }}
+                  className={`${styles.card} ${selectedIds.includes(r.id) ? styles.selected : ""}`}
               >
                 <h3>{r.name}</h3>
                 <p>Rank: {r.rank}</p>
@@ -84,49 +79,11 @@ function SelectRedactors() {
           ))}
         </div>
 
-        <button style={styles.button} onClick={submit} disabled={!selectedIds.length}>
+        <button className={styles.button} onClick={submit} disabled={!selectedIds.length}>
           Attempt Decode
         </button>
       </div>
   );
 }
-
-
-const styles = {
-  container: {
-    backgroundColor: "black",
-    color: "#00ff00",
-    minHeight: "100vh",
-    fontFamily: "'Courier New', monospace",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingTop: "20px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(5, 1fr)",
-    gap: "16px",
-    marginTop: "20px",
-  },
-  card: {
-    padding: "12px",
-    cursor: "pointer",
-    borderRadius: "4px",
-    backgroundColor: "black",
-  },
-  button: {
-    backgroundColor: "black",
-    color: "#00ff00",
-    border: "1px solid #00ff00",
-    padding: "8px 16px",
-    cursor: "pointer",
-    marginTop: "20px",
-    fontFamily: "'Courier New', monospace",
-  },
-  error: {
-    color: "red",
-  },
-};
 
 export default SelectRedactors;

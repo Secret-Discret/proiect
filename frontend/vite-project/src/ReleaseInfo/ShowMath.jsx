@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import styles from "../styles/ShowMathStyles.module.css"
 
 function MathUI() {
   const { state } = useLocation();
@@ -6,12 +7,12 @@ function MathUI() {
   const { secretId, result } = state;
 
   if (!state || !result) {
-    return <div style={styles.container}>No decode data.</div>;
+    return <div className={styles.container}>No decode data.</div>;
   }
 
   return (
-      <div style={styles.container}>
-        <h1>🔐 Decode Attempt — {secretId}</h1>
+      <div className={styles.container}>
+        <h1>🔐 Decode Attempt : {secretId}</h1>
 
         {result.success ? (
             <>
@@ -26,7 +27,7 @@ function MathUI() {
             </>
         )}
 
-        <h3>📐 Math Steps</h3>
+        <h3>📐 Decode Steps</h3>
         <ul>
           {result.math_steps.map((s, i) => (
               <li key={i}>
@@ -37,14 +38,14 @@ function MathUI() {
         </ul>
 
         <button
-            style={styles.button}
+            className={styles.button}
             onClick={() => navigate("/second/select-secret")}
         >
            Decode Another Secret
         </button>
 
         <button
-            style={styles.button}
+            className={styles.button}
             onClick={() => navigate("/second")}
         >
            Restart Simulation
@@ -52,7 +53,7 @@ function MathUI() {
 
         {result.success ? (
             <>
-              <button style={styles.button} onClick={() =>
+              <button className={styles.button} onClick={() =>
                   navigate("/second/attack", { state: { secretId: secretId } })
               }>
                 Understood
@@ -68,53 +69,5 @@ function MathUI() {
   );
 }
 
-const styles = {
-  container: {
-    backgroundColor: "black",
-    color: "#00ff00",
-    minHeight: "100vh",
-    fontFamily: "'Courier New', monospace",
-    padding: "24px",
-  },
-  panel: {
-    border: "1px solid #00ff00",
-    padding: "16px",
-    marginBottom: "20px",
-  },
-  step: {
-    marginBottom: "16px",
-  },
-  stepTitle: {
-    fontWeight: "bold",
-    marginBottom: "4px",
-  },
-  description: {
-    fontStyle: "italic",
-    opacity: 0.85,
-  },
-  formula: {
-    backgroundColor: "#001100",
-    padding: "8px",
-    marginTop: "4px",
-    whiteSpace: "pre-wrap",
-  },
-  result: {
-    marginTop: "20px",
-    textAlign: "center",
-  },
-  secret: {
-    fontSize: "1.5rem",
-    marginTop: "8px",
-  },
-  button: {
-    marginTop: "24px",
-    padding: "10px 20px",
-    backgroundColor: "black",
-    color: "#00ff00",
-    border: "1px solid #00ff00",
-    cursor: "pointer",
-    fontFamily: "'Courier New', monospace",
-  },
-};
 
 export default MathUI;

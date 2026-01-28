@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import introVideo from "../assets/852292-hd_1728_1080_25fps.mp4";
+import styles from "../styles/TransitionStyles.module.css"
 
 function ShamirTransition() {
     const { state } = useLocation();
@@ -24,48 +25,35 @@ function ShamirTransition() {
             clearInterval(timer);
             clearTimeout(redirect);
         };
-    }, [navigate]);
+    }, []);
 
     return (
-        <div style={styles.container}>
-            <video autoPlay muted loop style={styles.video}>
+        <div className={styles.container}>
+            <video autoPlay muted loop className={styles.video}>
                 <source src={introVideo} />
             </video>
 
-            <div style={styles.overlay}>
-                <h1>🔐 Splitting Secret</h1>
+            <div className={styles.overlay}>
+                <h1>🔐 Encoding Secret</h1>
                 <p>Certainly not doing illegal math..</p>
                 <p>Continuing in {countdown}s</p>
 
-                <div style={styles.math}>
-                    {encodeSteps.map((s, i) => (
-                        <div key={i}>
-                            <strong>{s.step}</strong>
-                            <div>→ {s.formula}</div>
-                        </div>
-                    ))}
-                </div>
+                {encodeSteps.length > 0 && (
+                    <div className={styles.mathPanel}>
+                        <h3>📐 Encoding Steps</h3>
+                        <ul className={styles.mathList}>
+                            {encodeSteps.map((s, i) => (
+                                <li key={i} className={styles.mathItem}>
+                                    <strong>{s.step}</strong>
+                                    {s.formula && <div className={styles.formula}>→ {s.formula}</div>}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
-
-const styles = {
-    container: { position: "relative", height: "100vh" },
-    video: { width: "100%", height: "100%", objectFit: "cover" },
-    overlay: {
-        position: "absolute",
-        inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        color: "#00ff00",
-        padding: "24px",
-        overflowY: "auto",
-    },
-    math: {
-        marginTop: "20px",
-        fontFamily: "Courier New, monospace",
-        fontSize: "0.9rem",
-    },
-};
 
 export default ShamirTransition;

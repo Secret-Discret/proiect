@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import styles from "../styles/LandingStyles.module.css"
 const API = import.meta.env.VITE_SIMPLE_API_BASE;
 
 function ShamirLanding() {
@@ -22,9 +22,12 @@ function ShamirLanding() {
                 body: JSON.stringify({ secret, n, threshold }),
             });
 
-            if (!res.ok) throw new Error("Split failed");
-
             const data = await res.json();
+
+            if (!data.success) {
+                setError(data.error || "Unknown error while splitting secret");
+                return;
+            }
 
             navigate("/simple/transition", {
                 state: {
@@ -39,72 +42,38 @@ function ShamirLanding() {
     };
 
     return (
-        <div style={styles.container}>
+        <div className={styles.container}>
             <h1>🤫 Hide Something</h1>
             <p>Not asking why. We don't judge anyone.</p>
 
             {error && <p style={{ color: "red" }}>{error}</p>}
 
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input style={styles.input}
-                    placeholder="Your secret (text)"
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <input className={styles.input}
+                    placeholder="Your secret (nr or text)"
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
                     required
                 />
 
-                <input style={styles.input}
+                <input className={styles.input}
                     type="number"
                     value={n}
                     onChange={(e) => setN(Number(e.target.value))}
                     placeholder="Number of shares"
                 />
 
-                <input style={styles.input}
+                <input className={styles.input}
                     type="number"
                     value={threshold}
                     onChange={(e) => setThreshold(Number(e.target.value))}
                     placeholder="Threshold"
                 />
 
-                <button style={styles.button}>Split Secret</button>
+                <button className={styles.button}>Split Secret</button>
             </form>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        background: "black",
-        color: "#00ff00",
-        minHeight: "100vh",
-        fontFamily: "Courier New, monospace",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        width: "300px",
-    },
-    input: {
-        backgroundColor: "black",
-        color: "#00ff00",
-        border: "1px solid #00ff00",
-        padding: "8px",
-        width: "260px",
-    },
-    button: {
-        backgroundColor: "black",
-        color: "#00ff00",
-        width: "275px",
-        border: "1px solid #00ff00",
-        padding: "8px 16px",
-        cursor: "pointer",
-    },
-};
 
 export default ShamirLanding;

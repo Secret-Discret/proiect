@@ -1,0 +1,59 @@
+.container {
+    background-color: black;
+    color: #00ff00;
+    min-height: 100vh;
+    font-family: 'Courier New', monospace;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.panel {
+    border: 1px solid #00ff00;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.step {
+    margin-bottom: 16px;
+}
+
+.stepTitle {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.description {
+    font-style: italic;
+    opacity: 0.85;
+}
+
+.formula {
+    background-color: #001100;
+    padding: 8px;
+    margin-top: 4px;
+    white-space: pre-wrap;
+}
+
+.result {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.secret {
+    font-size: 1.2rem;
+    margin-top: 8px;
+    background: #001100;
+    padding: 12px;
+}
+
+.button {
+    margin-top: 24px;
+    padding: 10px 20px;
+    background-color: black;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
