@@ -1,8 +1,6 @@
+from typing import Union
 import WeightedSecretSharing.routes as weightedRoutes
-import MultiSecretSharing.routes as multiRoutes
-import ThresholdSimpleSharing.routes as thresholdSharing
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 

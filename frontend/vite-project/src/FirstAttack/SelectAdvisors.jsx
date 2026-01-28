@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE_Dell;
 
 function SelectAdvisors() {
   const [advisors, setAdvisors] = useState([]);
@@ -22,7 +22,7 @@ function SelectAdvisors() {
 
   const toggleAdvisor = (id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -34,7 +34,7 @@ function SelectAdvisors() {
 
       const res = await fetch(
         `${API_BASE}/president/select-advisors?${params}`,
-        { method: "POST" }
+        { method: "POST" },
       );
 
       if (!res.ok) throw new Error("Advisor selection failed");

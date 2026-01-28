@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE_Dell;
 
 function Landing() {
   const [name, setName] = useState("");
@@ -19,7 +19,7 @@ function Landing() {
     try {
       const response = await fetch(
         `${API_BASE}/president/${encodeURIComponent(name)}`,
-        { method: "PUT" }
+        { method: "PUT" },
       );
 
       if (!response.ok) throw new Error("Failed to set president");
@@ -37,7 +37,7 @@ function Landing() {
     try {
       const response = await fetch(
         `${API_BASE}/secret/${encodeURIComponent(secret)}`,
-        { method: "PUT" }
+        { method: "PUT" },
       );
 
       if (!response.ok) throw new Error("Failed to encode secret");
@@ -47,7 +47,7 @@ function Landing() {
         "minWeight:",
         data.min_total_weight,
         "accessStructureLength:",
-        data.access_structure_len
+        data.access_structure_len,
       );
 
       navigate("/math", {
