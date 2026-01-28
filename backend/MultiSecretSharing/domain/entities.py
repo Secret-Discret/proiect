@@ -17,8 +17,6 @@ class Redactor:
     def to_string(self):
         return f"ID={self.id} | Name={self.name} | Position={self.position} | Rank={self.rank} | Share={self.share}"
 
-
-
 class Director:
     def __init__(self, name: str):
         self.name = name

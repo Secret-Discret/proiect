@@ -1,50 +1,22 @@
 import random
-from typing import Dict, List
-
+from typing import Dict
+from MultiSecretSharing.utils.utils import *
 from MultiSecretSharing.repository.repository import MultiSecretRepository, Redactor
 
 PRIME = 11
-
-def eval_poly(coeffs: List[int], x: int) -> int:
-    y = 0
-    for i, c in enumerate(coeffs):
-        y = (y + c * pow(x, i, PRIME)) % PRIME
-    return y
-
-def poly_mul_mod(a: List[int], b: List[int], prime: int) -> List[int]:
-    res = [0] * (len(a) + len(b) - 1)
-    for i, ac in enumerate(a):
-        for j, bc in enumerate(b):
-            res[i + j] = (res[i + j] + ac * bc) % prime
-    return res
-
-def interpolate_polynomial(points: List[tuple], prime: int) -> List[int]:
-    n = len(points)
-    coeffs = [0] * n
-    for i, (xi, yi) in enumerate(points):
-        li_coeff = [1]  # Start with L_i(x) = 1
-        for j, (xj, _) in enumerate(points):
-            if i == j:
-                continue
-            denom_inv = pow(xi - xj, -1, prime)
-            li_coeff = poly_mul_mod(li_coeff, [-xj * denom_inv % prime, 1 * denom_inv % prime], prime)
-        # Multiply L_i(x) by yi and add to final coeffs
-        for k in range(len(li_coeff)):
-            coeffs[k] = (coeffs[k] + li_coeff[k] * yi) % prime
-    return coeffs
 
 class MultiSecretService:
     def __init__(self):
         self.repository = MultiSecretRepository()
 
-    def set_director(self, name: str):
+    def _set_director(self, name: str):
         self.repository.set_director(name)
         return {"message": f"Director set to {name}"}
 
-    def get_redactors(self) -> List[Redactor]:
+    def _get_redactors(self) -> List[Redactor]:
         return self.repository.get_redactors()
 
-    def encode_secrets(self, secrets: Dict[str, int]):
+    def _encode_secrets(self, secrets: Dict[str, int]):
         coeffs = []
         math_steps = []
 
@@ -104,7 +76,7 @@ class MultiSecretService:
         })
 
         for r in self.repository.get_redactors():
-            share = eval_poly(coeffs, r.id)
+            share = evaluate_polynomial(coeffs, r.id)
             r.set_share(r.id, share)
 
             math_steps.append({
@@ -113,25 +85,26 @@ class MultiSecretService:
             })
 
         return {
+            "success": True,
             "message": "Secrets encoded into polynomial",
             "degree": len(coeffs) - 1,
             "math_steps": math_steps
         }
 
-    def trust_redactors(self, secret_id: str, ids: List[int]):
+    def _trust_redactors(self, secret_id: str, ids: List[int]):
         self.repository.trust_redactors(secret_id, ids)
 
-    def clear_trusted_redactors(self, secret_id: str):
+    def _clear_trusted_redactors(self, secret_id: str):
         self.repository.clear_trusted_redactors(secret_id)
         return {"message": f"Trusted redactors cleared for '{secret_id}'"}
 
-    def get_trusted_redactors(self, secret_id: str):
+    def _get_trusted_redactors(self, secret_id: str):
         return list(self.repository.get_trusted_redactors(secret_id))
 
-    def decode_secret(self, secret_id: str):
+    def _decode_secret(self, secret_id: str):
         meta = self.repository.get_secret(secret_id)
         if not meta:
-            return {"success": False, "error": "Secret not found"}
+            return {"success": False, "error": "Secret not found!"}
 
         trusted = self.repository.get_trusted_redactors(secret_id)
         points = []
@@ -195,7 +168,7 @@ class MultiSecretService:
                 "math_steps": math_steps
             }
 
-        secret_coeffs = interpolate_polynomial(points, PRIME)
+        secret_coeffs = interpolate_polynomial(points)
         secret = secret_coeffs[meta["index"]]
 
         math_steps.append({
@@ -211,10 +184,10 @@ class MultiSecretService:
             "math_steps": math_steps
         }
 
-    def list_secrets(self):
+    def _list_secrets(self):
         return list(self.repository.get_all_secrets())
 
-    def get_secret_metadata(self, secret_id: str):
+    def _get_secret_data(self, secret_id: str):
         secret = self.repository.get_secret(secret_id)
         if not secret:
             return {"error": "Secret not found"}

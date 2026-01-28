@@ -1,5 +1,10 @@
 from typing import Union
+
+from starlette.middleware.cors import CORSMiddleware
+
 import WeightedSecretSharing.routes as weightedRoutes
+import MultiSecretSharing.routes as multiRoutes
+import ThresholdSimpleSharing.routes as thresholdRoutes
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -20,7 +25,7 @@ app.include_router(weightedRoutes.router, prefix="/weighted", tags=["WeightedSec
 app.include_router(multiRoutes.multi_router, prefix="/multi", tags=["MultiSecretSharing"])
 
 # the simple one is after the geeksforgeeks simple shamir implementation
-app.include_router(thresholdSharing.simple_router, prefix="/simple", tags=["SimpleSecretSharing"])
+app.include_router(thresholdRoutes.simple_router, prefix="/simple", tags=["SimpleSecretSharing"])
 
 for route in app.routes:
     print(route.path, route.name)

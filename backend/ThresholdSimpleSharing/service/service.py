@@ -1,16 +1,18 @@
-from typing import Dict, Any
-from ThresholdSimpleSharing.domain.entities import generate_shares, reconstruct_secret
-from ThresholdSimpleSharing.repository.repository import ShamirRepository
-
+from ThresholdSimpleSharing.shamir_logic.entities import generate_shares, reconstruct_secret
+from typing import Dict, Any, List, Tuple
 
 class ShamirService:
-    def __init__(self, repo: ShamirRepository):
-        self.repo = repo
+    def __init__(self):
+        print("Simple Shamir intialized.")
 
     def _encode_secret(self, secret: str) -> int:
-        return int.from_bytes(secret.encode(), "big")
+        if secret.isdigit():
+            return int(secret)
+        return int.from_bytes(secret.encode("utf-8"), "big")
 
     def _decode_secret(self, secret_int: int) -> str:
+        if secret_int == 0:
+            return "0"
         try:
             length = (secret_int.bit_length() + 7) // 8
             decoded = secret_int.to_bytes(length, "big").decode("utf-8")
@@ -18,7 +20,7 @@ class ShamirService:
         except Exception:
             return str(secret_int)
 
-    def split_secret(self, secret: str, n: int, threshold: int) -> Dict[str, Any]:
+    def _split_secret(self, secret: str, n: int, threshold: int) -> Dict[str, Any]:
         math_steps = []
 
         math_steps.append({
@@ -26,12 +28,7 @@ class ShamirService:
             "formula": "Nvm. We will not ask why you want to hide this."
         })
 
-        numeric_secret = (
-            int(secret)
-            if secret.isdigit()
-            else self._encode_secret(secret)
-        )
-
+        numeric_secret = self._encode_secret(secret)
         math_steps.append({
             "step": "Secret Encoding",
             "formula": f"secret → {numeric_secret}"
@@ -50,16 +47,15 @@ class ShamirService:
                 "formula": f"({x}, {y})"
             })
 
-        self.repo.store(numeric_secret, shares, threshold)
-
         return {
+            "success": True,
             "message": "Your secret has been irresponsibly split.",
             "threshold": threshold,
             "shares": shares,
             "math_steps": math_steps
         }
 
-    def reconstruct(self, provided_shares):
+    def _reconstruct(self, provided_shares: List[Tuple[int, int]]) -> Dict[str, Any]:
         math_steps = []
 
         math_steps.append({
@@ -83,6 +79,7 @@ class ShamirService:
 
         return {
             "success": True,
-            "secret": decoded,
+            "secret": str(decoded),
             "math_steps": math_steps
         }
+
