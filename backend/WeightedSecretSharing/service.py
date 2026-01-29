@@ -1,5 +1,4 @@
 import random
-import hashlib
 from typing import List, Dict
 from WeightedSecretSharing.repository import WeightedRepository
 from WeightedSecretSharing.entities import Advisor
@@ -10,7 +9,8 @@ class WeightedService:
         self.repository = WeightedRepository()
         self.access_structure: set[int] = set()
         self.secret: str = ""
-        self.min_total_weight: int = 0  
+        self.min_total_weight: int = 0
+        self.secret_int: int = 0
 
     def setPresident(self, name: str):
         self.repository.add_president(name)
@@ -24,147 +24,142 @@ class WeightedService:
             if advisor.id in advisor_ids:
                 self.repository.add_trustedAdvisor(advisor)
         return {"message": "Trusted advisors selected."}
-    
+
     def delete_trusted_advisors(self):
         self.repository.delete_allTrustedAdvisors()
         return {"message": "All trusted advisors have been deleted."}
 
+    # ----------------------------
+    # Shamir helper functions
+    # ----------------------------
+    def _secret_to_int(self, secret: str) -> int:
+        return int.from_bytes(secret.encode(), byteorder="big")
+
+    def _int_to_secret(self, value: int) -> str:
+        length = (value.bit_length() + 7) // 8
+        return value.to_bytes(length, byteorder="big").decode()
+
+    def _lagrange_interpolate(self, x, points):
+        total = 0
+        for i, (xi, yi) in enumerate(points):
+            li = 1
+            for j, (xj, _) in enumerate(points):
+                if i != j:
+                    li *= (x - xj) / (xi - xj)
+            total += yi * li
+        return round(total)
+
+    # ----------------------------
+    # Encode secret using shares
+    # ----------------------------
     def encode_secret(self, secret: str) -> Dict:
         self.secret = secret
+        self.secret_int = self._secret_to_int(secret)
         advisors = self.repository.get_allAdvisors()
 
         if not advisors:
             raise ValueError("No advisors available")
 
         math_steps = []
-        k = random.randint(1, len(advisors)-1)
+        k = random.randint(1, len(advisors) - 1)
         selected = random.sample(advisors, k=k)
         self.access_structure = {a.id for a in selected}
-        print(f"[ENCODE] Selected {k} advisors for access structure: {list(self.access_structure)}")
-        math_steps.append({
-            "step": "Access Structure Selection",
-            "description": f"Randomly selected {k} advisors for access structure",
-            "formula": ""
-        })
 
         total_weight = sum(a.getRank() for a in selected)
         self.min_total_weight = total_weight // 2 + 1
+        t = self.min_total_weight
 
         math_steps.append({
-            "step": "Sum of Ranks",
-            "description": "Sum the ranks of all advisors in access structure",
-            "formula": f"Sum of ranks = {total_weight}"
+            "step": "Access Structure Selection",
+            "description": f"Randomly selected {k} advisors for access structure",
+            "formula": f"Selected IDs = {list(self.access_structure)}"
         })
         math_steps.append({
             "step": "Minimum Total Weight",
             "description": "Calculate the minimum total weight needed to reconstruct the secret",
-            "formula": f"Minimum total weight = {self.min_total_weight}"
+            "formula": f"min_total_weight = {self.min_total_weight}"
         })
 
-        for advisor in advisors:
-            code = self._generate_code(advisor.id)
-            self.repository.add_codeAdvisor(advisor, code)
-            math_steps.append({
-                "step": f"Generate Code for Advisor {advisor.id}",
-                "description": "Concatenate secret and advisor_id, then apply SHA256 hashing",
-                "formula": (
-                    f"x = secret || ':' || {advisor.id}\n"
-                    f"code_{advisor.id} = SHA256(x)\n"
-                    f"= {code}"
-                )
-            })
+        # Create random polynomial coefficients
+        coeffs = [self.secret_int] + [random.randint(1, 100) for _ in range(t - 1)]
 
         math_steps.append({
-            "step": f"Codes have been randomly assigned to all advisors!",
-            "description": "",
-            "formula": ""
+            "step": "Polynomial Coefficients",
+            "description": "Random coefficients for polynomial of degree t-1",
+            "formula": f"{coeffs}"
         })
 
+        # Polynomial function
+        def f(x):
+            return sum(coeffs[i] * (x ** i) for i in range(len(coeffs)))
+
+        # Assign weighted shares to advisors based on rank
+        x_counter = 1
+        for advisor in advisors:
+            shares = []
+            for _ in range(advisor.getRank()):
+                shares.append((x_counter, f(x_counter)))
+                x_counter += 1
+            # Store shares in advisor
+            if not hasattr(self.repository, "_shares"):
+                self.repository._shares = {}
+            self.repository._shares[advisor.id] = shares
+
+            math_steps.append({
+                "step": f"Shares for Advisor {advisor.id}",
+                "description": f"Advisor receives {advisor.getRank()} weighted shares",
+                "formula": f"{shares}"
+            })
+
         return {
-            "message": "Secret encoded with weighted shares.",
+            "message": "Secret encoded using weighted Shamir shares",
             "min_total_weight": self.min_total_weight,
             "access_structure_len": len(self.access_structure),
             "math_steps": math_steps
         }
 
-    def _generate_code(self, advisor_id: int) -> str:
-        data = f"{self.secret}:{advisor_id}".encode()
-        return hashlib.sha256(data).hexdigest()
-
+    # ----------------------------
+    # Decode secret using shares
+    # ----------------------------
     def decode_secret(self) -> Dict:
         total_weight = 0
         math_steps = []
+        shares_for_interpolation = []
 
         trusted_advisors = self.repository.get_trustedAdvisors()
-        print(f"[DECODE] Trusted advisors: {[a.id for a in trusted_advisors]}")
-
         math_steps.append({
             "step": "Trusted Advisors",
             "description": "List all trusted advisors",
-            "formula": f"TrustedAdvisors = {[a.id for a in trusted_advisors]}"
+            "formula": f"{[a.id for a in trusted_advisors]}"
         })
 
-        invalid_advisor_found = False
-
         for advisor in trusted_advisors:
-            print(f"[DECODE] Checking Advisor {advisor.id}...")
-            if not advisor.trust:
-                print(f"[DECODE] Advisor {advisor.id} is not trusted, skipped")
+            if not advisor.trust or advisor.id not in self.access_structure:
                 math_steps.append({
-                    "step": f"Advisor {advisor.id} Skipped",
-                    "description": "Advisor not trusted, skipped",
-                    "formula": f"Trust({advisor.id}) = False"
+                    "step": f"Advisor {advisor.id} skipped",
+                    "description": "Either not trusted or not in access structure",
+                    "formula": f"trust={advisor.trust}, in_access={advisor.id in self.access_structure}"
                 })
-                invalid_advisor_found = True
                 continue
 
-            if advisor.id not in self.access_structure:
-                print(f"[DECODE] Advisor {advisor.id} is not in access structure!")
-                math_steps.append({
-                    "step": f"Advisor {advisor.id} Invalid",
-                    "description": "Trusted advisor not in access structure",
-                    "formula": f"{advisor.id} not in AccessStructure"
-                })
-                invalid_advisor_found = True
-                continue
-
-            expected_code = self._generate_code(advisor.id)
-            print(f"[DECODE] Verifying code for Advisor {advisor.id}...")
-            math_steps.append({
-                "step": f"Verify Code for Advisor {advisor.id}",
-                "description": "Recompute hash and compare with stored code",
-                "formula": (
-                    f"x = secret || ':' || {advisor.id}\n"
-                    f"expected_{advisor.id} = SHA256(x)\n"
-                    f"stored_{advisor.id} = {advisor.getCode()}"
-                )
-            })
-
-
-            if advisor.getCode() != expected_code:
-                print(f"[DECODE] Verification failed for Advisor {advisor.id}")
-                math_steps.append({
-                    "step": f"Verification Failed",
-                    "description": f"Advisor {advisor.id}'s code does not match expected hash",
-                    "formula": f"code_{advisor.id} != expected_{advisor.id}"
-                })
-                invalid_advisor_found = True
-                continue
-
+            advisor_shares = self.repository._shares.get(advisor.id, [])
+            shares_for_interpolation.extend(advisor_shares)
             total_weight += advisor.getRank()
-            print(f"[DECODE] Accumulated total weight: {total_weight}")
+
             math_steps.append({
-                "step": f"Accumulate Weight for Advisor {advisor.id}",
-                "description": "Add advisor's rank to total weight",
-                "formula": f"total_weight = {total_weight}"
+                "step": f"Accumulate weight from Advisor {advisor.id}",
+                "description": "Add advisor rank to total weight",
+                "formula": f"total_weight={total_weight}"
             })
 
-        if invalid_advisor_found or total_weight < self.min_total_weight:
-            print(f"[DECODE] Decoding failed. Total weight = {total_weight}, Min required = {self.min_total_weight}")
+            if total_weight >= self.min_total_weight:
+                break
+
+        if total_weight < self.min_total_weight:
             math_steps.append({
                 "step": "Decoding Failed",
-                "description": "Either a trusted advisor was invalid or total weight below minimum",
-                "formula": f"total_weight = {total_weight}, min_total_weight = {self.min_total_weight}"
+                "description": "Not enough weighted shares to reconstruct secret",
+                "formula": f"total_weight={total_weight}, required={self.min_total_weight}"
             })
             return {
                 "success": False,
@@ -173,16 +168,20 @@ class WeightedService:
                 "math_steps": math_steps
             }
 
-        print(f"[DECODE] Decoding successful! Total weight = {total_weight}")
+        used_shares = shares_for_interpolation[:self.min_total_weight]
+        reconstructed_int = self._lagrange_interpolate(0, used_shares)
+        reconstructed_secret = self._int_to_secret(reconstructed_int)
+
         math_steps.append({
-            "step": "Decoding Success",
-            "description": "All trusted advisors valid and total weight meets minimum",
-            "formula": f"total_weight = {total_weight} >= min_total_weight = {self.min_total_weight}"
+            "step": "Reconstruction",
+            "description": "Lagrange interpolation at x=0 using weighted shares",
+            "formula": f"secret_int = {reconstructed_int}"
         })
 
         return {
             "success": True,
             "total_weight": total_weight,
             "required_weight": self.min_total_weight,
+            "secret": reconstructed_secret,
             "math_steps": math_steps
         }
