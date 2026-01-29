@@ -29,9 +29,6 @@ class WeightedService:
         self.repository.delete_allTrustedAdvisors()
         return {"message": "All trusted advisors have been deleted."}
 
-    # ----------------------------
-    # Shamir helper functions
-    # ----------------------------
     def _secret_to_int(self, secret: str) -> int:
         return int.from_bytes(secret.encode(), byteorder="big")
 
@@ -49,9 +46,6 @@ class WeightedService:
             total += yi * li
         return round(total)
 
-    # ----------------------------
-    # Encode secret using shares
-    # ----------------------------
     def encode_secret(self, secret: str) -> Dict:
         self.secret = secret
         self.secret_int = self._secret_to_int(secret)
@@ -80,7 +74,6 @@ class WeightedService:
             "formula": f"min_total_weight = {self.min_total_weight}"
         })
 
-        # Create random polynomial coefficients
         coeffs = [self.secret_int] + [random.randint(1, 100) for _ in range(t - 1)]
 
         math_steps.append({
@@ -89,18 +82,15 @@ class WeightedService:
             "formula": f"{coeffs}"
         })
 
-        # Polynomial function
         def f(x):
             return sum(coeffs[i] * (x ** i) for i in range(len(coeffs)))
 
-        # Assign weighted shares to advisors based on rank
         x_counter = 1
         for advisor in advisors:
             shares = []
             for _ in range(advisor.getRank()):
                 shares.append((x_counter, f(x_counter)))
                 x_counter += 1
-            # Store shares in advisor
             if not hasattr(self.repository, "_shares"):
                 self.repository._shares = {}
             self.repository._shares[advisor.id] = shares
@@ -118,9 +108,7 @@ class WeightedService:
             "math_steps": math_steps
         }
 
-    # ----------------------------
-    # Decode secret using shares
-    # ----------------------------
+
     def decode_secret(self) -> Dict:
         total_weight = 0
         math_steps = []
