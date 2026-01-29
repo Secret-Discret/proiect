@@ -66,14 +66,19 @@ class WeightedService:
             self.repository.add_codeAdvisor(advisor, code)
             math_steps.append({
                 "step": f"Generate Code for Advisor {advisor.id}",
-                "description": "Compute SHA256(secret : advisor_id) (hidden for security)",
-                "formula": f"code_{advisor.id} = SHA256(secret : {advisor.id})"
+                "description": "Concatenate secret and advisor_id, then apply SHA256 hashing",
+                "formula": (
+                    f"x = secret || ':' || {advisor.id}\n"
+                    f"code_{advisor.id} = SHA256(x)\n"
+                    f"= {code}"
+                )
             })
+
         math_steps.append({
-                "step": f"Codes have been randomly assigned to all advisors",
-                "description": "",
-                "formula": ""
-            })
+            "step": f"Codes have been randomly assigned to all advisors!",
+            "description": "",
+            "formula": ""
+        })
 
         return {
             "message": "Secret encoded with weighted shares.",
@@ -127,9 +132,14 @@ class WeightedService:
             print(f"[DECODE] Verifying code for Advisor {advisor.id}...")
             math_steps.append({
                 "step": f"Verify Code for Advisor {advisor.id}",
-                "description": "Compute expected SHA256(secret : advisor_id) to verify",
-                "formula": f"expected_{advisor.id} = SHA256(secret : {advisor.id})"
+                "description": "Recompute hash and compare with stored code",
+                "formula": (
+                    f"x = secret || ':' || {advisor.id}\n"
+                    f"expected_{advisor.id} = SHA256(x)\n"
+                    f"stored_{advisor.id} = {advisor.getCode()}"
+                )
             })
+
 
             if advisor.getCode() != expected_code:
                 print(f"[DECODE] Verification failed for Advisor {advisor.id}")

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import attackVideo from "../assets/13164095_3840_2160_30fps.mp4";
-import styles from "../styles/AttackStyles.module.css"
-import partyVideo from "../assets/vecteezy_world-map-background-news-studio-background-for-news-report_30964613.mov";
+import styles from "../styles/AttackStyles.module.css";
+import partyVideo from "../assets/vecteezy_world-map-background-news-studio-background-for-news-report_30964613.mp4";
 import ufoVideo from "../assets/vecteezy_searching-documents-file-of-top-secret-in-drawer-in-dark_57045314.mp4";
 import presidentVideo from "../assets/vecteezy_quantum-computer-futuristic-technology-digital-holographic_2709172.mp4";
 
@@ -24,7 +24,6 @@ const ATTACK_CONTENT = {
   },
 };
 
-
 function AttackPosts() {
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -33,12 +32,11 @@ function AttackPosts() {
 
   const secretId = state?.secretId;
 
-  const content =
-      ATTACK_CONTENT[secretId] ?? {
-      title: "Attack Successful",
-      message: "The secret has been reconstructed.",
-      video: attackVideo,
-    };
+  const content = ATTACK_CONTENT[secretId] ?? {
+    title: "Attack Successful",
+    message: "The secret has been reconstructed.",
+    video: attackVideo,
+  };
 
   useEffect(() => {
     const handleKeyPress = () => {
@@ -49,14 +47,13 @@ function AttackPosts() {
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [navigate]);
 
-
   return (
     <div className={styles.container}>
       <video
-          autoPlay
-          playsInline
-          className={styles.video}
-          onEnded={() => setShowPrompt(true)}
+        autoPlay
+        playsInline
+        className={styles.video}
+        onEnded={() => setShowPrompt(true)}
       >
         <source src={content.video} type="video/mp4" />
       </video>
@@ -66,13 +63,11 @@ function AttackPosts() {
         <p>{content.message}</p>
 
         {showPrompt && (
-            <p className={styles.pressKey}>Press any key to continue...</p>
+          <p className={styles.pressKey}>Press any key to continue...</p>
         )}
       </div>
     </div>
   );
 }
-
-
 
 export default AttackPosts;
