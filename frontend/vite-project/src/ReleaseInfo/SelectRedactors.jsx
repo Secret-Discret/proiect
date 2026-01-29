@@ -74,6 +74,7 @@ function SelectRedactors() {
                   className={`${styles.card} ${selectedIds.includes(r.id) ? styles.selected : ""}`}
               >
                 <h3>{r.name}</h3>
+                <p> {r.position}</p>
                 <p>Rank: {r.rank}</p>
               </div>
           ))}

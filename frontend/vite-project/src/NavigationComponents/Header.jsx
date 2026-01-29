@@ -7,6 +7,7 @@ function Header() {
         { path: "/", label: "Weighted Secret Sharing" },
         { path: "/second", label: "Multi Secret Sharing" },
         { path: "/simple", label: "Simple Secret Sharing" },
+        { path: "/emergency", label: "Hierarchical Secret Sharing"},
     ];
 
     return (

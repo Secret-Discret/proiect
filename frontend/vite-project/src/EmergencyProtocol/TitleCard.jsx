@@ -28,6 +28,7 @@ const styles = {
   overlay: {
     position: "fixed",
     inset: 0,
+    zIndex: 2000,
     backgroundColor: "#000000",
     backgroundImage: `url(${skull})`,
     backgroundRepeat: "no-repeat",
@@ -36,7 +37,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1000,
     cursor: "pointer"
   },
   card: {

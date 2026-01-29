@@ -63,6 +63,7 @@ function ShowMath() {
 
 const styles = {
   container: {
+    paddingTop:"20px",
     position: "relative",
     width: "100%",
     height: "100vh",

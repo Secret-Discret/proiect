@@ -6,7 +6,7 @@ import styles from "../styles/TransitionStyles.module.css"
 function TransitionScreen() {
     const navigate = useNavigate();
     const { state } = useLocation();
-    const [countdown, setCountdown] = useState(5);
+    const [countdown, setCountdown] = useState(10);
 
     const mathSteps = state?.result?.math_steps ?? [];
 
@@ -17,7 +17,7 @@ function TransitionScreen() {
 
         const redirect = setTimeout(() => {
             navigate("/second/select-secret");
-        }, 5000);
+        }, 10000);
 
         return () => {
             clearInterval(timer);

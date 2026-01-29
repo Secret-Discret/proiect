@@ -6,14 +6,14 @@ from MultiSecretSharing.domain.entities import Redactor, Director
 class MultiSecretRepository:
     def __init__(self):
         self.redactors: List[Redactor] = [
-            Redactor(1, "Ultron", "Secretary of Defense", 5),
-            Redactor(2, "Tony Stark", "Secretary of State", 4),
-            Redactor(3, "The Joker", "National Security Advisor", 4),
-            Redactor(4, "Sauron", "Chairman of the Joint Chiefs", 5),
-            Redactor(5, "Lena Luthor", "Vice Chairman", 4),
-            Redactor(6, "Voldemort", "Director of Intelligence", 4),
-            Redactor(7, "Cthulhu", "Strategic Forces Commander", 5),
-            Redactor(8, "Batman", "Homeland Security", 3),
+            Redactor(1, "Nebuchadnezzar II", "Editor in Chief", 5),
+            Redactor(2, "Draco Malfoy", "Intern", 4),
+            Redactor(3, "The Joker v2", "That annoying co-worker", 4),
+            Redactor(4, "Alin", "Manager Editor", 5),
+            Redactor(5, "Siegbert", "Editor", 4),
+            Redactor(6, "Baba Dochia", "Writer", 4),
+            Redactor(7, "Marcel", "Fact Checker", 5),
+            Redactor(8, "Ea-Nasir", "Writer", 3),
         ]
 
         self.director = Director("")

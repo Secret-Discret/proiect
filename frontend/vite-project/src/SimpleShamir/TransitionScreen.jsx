@@ -6,7 +6,7 @@ import styles from "../styles/TransitionStyles.module.css"
 function ShamirTransition() {
     const { state } = useLocation();
     const navigate = useNavigate();
-    const [countdown, setCountdown] = useState(5);
+    const [countdown, setCountdown] = useState(10);
 
     const { encodeSteps, shares, threshold } = state;
 
@@ -19,7 +19,7 @@ function ShamirTransition() {
             navigate("/simple/math", {
                 state: { shares, threshold },
             });
-        }, 5000);
+        }, 10000);
 
         return () => {
             clearInterval(timer);

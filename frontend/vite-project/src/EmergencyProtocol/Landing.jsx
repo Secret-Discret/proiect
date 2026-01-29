@@ -11,11 +11,15 @@ export default function EmergencyLanding() {
     const [threshold, setThreshold] = useState(0);
     const [showTitle, setShowTitle] = useState(false);
 
+    // useEffect(() => {
+    //     const seen = localStorage.getItem("scenarioSeen");
+    //     if (!seen) {
+    //     setShowTitle(true);
+    //     }
+    // }, []);
+
     useEffect(() => {
-        const seen = localStorage.getItem("scenarioSeen");
-        if (!seen) {
         setShowTitle(true);
-        }
     }, []);
 
     //fetch scenario and users from backend
