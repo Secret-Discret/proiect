@@ -19,7 +19,7 @@ function Landing() {
     try {
       const response = await fetch(
         `${API_BASE}/president/${encodeURIComponent(name)}`,
-        { method: "PUT" },
+        { method: "PUT" }
       );
 
       if (!response.ok) throw new Error("Failed to set president");

@@ -13,6 +13,8 @@ import ShamirLanding from "./SimpleShamir/Landing.jsx";
 import ShamirTransition from "./SimpleShamir/TransitionScreen.jsx";
 import ShamirDecodeMath from "./SimpleShamir/ShowMath.jsx";
 import Header from "./NavigationComponents/Header.jsx";
+import HierarchicalShowMath from "./EmergencyProtocol/ShowMath.jsx";
+import EmergencyLanding from "./EmergencyProtocol/Landing.jsx";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/advisors" element={<SelectAdvisors />} />
         <Route path="/attack" element={<Attack />} />
         <Route path="/math" element={<ShowMath />} />
+        <Route path="/emergency" element={<EmergencyLanding />} />
+        <Route path="/emergency/math" element={<HierarchicalShowMath />} />
         <Route path="/second" element={<MultiLanding />} />
         <Route path="/second/transition" element={<TransitionScreen />} />
         <Route path="/second/redactors" element={<SelectRedactors />} />
