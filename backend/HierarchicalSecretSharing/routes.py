@@ -1,9 +1,13 @@
 from fastapi import APIRouter
 from .repository import InMemoryRepository
-from .service import start_round, reconstruct_secret
+from .service import start_round, reconstruct_secret, PRIME
+from pydantic import BaseModel
+from typing import List
 
 router = APIRouter()
 repo = InMemoryRepository()
+class CoalitionRequest(BaseModel):
+    selected_user_ids: List[int]
 
 THRESHOLD = 4
 
@@ -28,6 +32,10 @@ def start():
             }
             for u in users
         ],
+        "user_shares": {
+            uid: [{"x": s.x, "y": s.y} for s in shares]
+            for uid, shares in state.user_shares.items()
+        },
         "polynomial_coefficients": coeffs
     }
 
@@ -46,17 +54,20 @@ def submit(user_id: int):
         "threshold": state.threshold
     }
 
-@router.get("/reconstruct")
-def reconstruct():
+@router.post("/reconstruct")
+def reconstruct(selected_user_ids: list[int]):
     state = repo.get_round()
 
-    if len(state.submitted_shares) < state.threshold:
-        return {"authorized": False}
+    shares = []
+    for uid in selected_user_ids:
+        shares.extend(state.user_shares[uid])
 
-    used = state.submitted_shares[:state.threshold]
-    recovered = reconstruct_secret(used)
+    secret = reconstruct_secret(shares)
 
     return {
-        "authorized": recovered == state.secret,
-        "recovered_secret": recovered
+        "prime": PRIME,
+        "reconstructed_secret": secret,
+        "shares_used": [
+            {"x": s.x, "y": s.y} for s in shares
+        ]
     }

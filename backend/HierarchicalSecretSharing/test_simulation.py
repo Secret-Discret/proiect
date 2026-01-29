@@ -1,7 +1,10 @@
 from HierarchicalSecretSharing.service import start_round, reconstruct_secret
 from HierarchicalSecretSharing.entities import User
+from HierarchicalSecretSharing.repository import InMemoryRepository
 
-state, coeffs = start_round(threshold=4)
+repo = InMemoryRepository()
+users = repo.get_users()
+state, coeffs = start_round(users, threshold=4)
 
 #pick coalition: Deputy+Senior (3+2 shares)
 shares = (

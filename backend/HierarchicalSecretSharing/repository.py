@@ -10,6 +10,10 @@ SCENARIO_AVAILABILITY = {
     7: True,
     8: True,
     9: True,
+    10: False,
+    11: True,
+    12: False,
+    13: True,
 }
 
 class InMemoryRepository:
@@ -24,6 +28,10 @@ class InMemoryRepository:
             User(7, "Dawn", 1),
             User(8, "Garret", 1),
             User(9, "Nat Ally", 1),
+            User(10, "Billy", 1),
+            User(11, "Hugh Laurie", 2),
+            User(12, "James Wilson", 2),
+            User(13, "Remy Hadley", 1),
         ]
 
         self.round_state: RoundState | None = None
